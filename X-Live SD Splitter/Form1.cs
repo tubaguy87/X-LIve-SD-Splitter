@@ -104,6 +104,7 @@ namespace X_Live_SD_Splitter
         int bufferFact = new int();
         int bufferIter = new int();
         bool isValidated = false;
+        bool bwInit = false;
         List<byte[]> inBuf;
         private void button1_Click(object sender, EventArgs e)
         {
@@ -204,9 +205,17 @@ namespace X_Live_SD_Splitter
             });
             */
             bw.WorkerReportsProgress = true;
-            bw.RunWorkerCompleted += Bw_RunWorkerCompleted; //DoIt_Done();
-            bw.DoWork += (obj,e) => DoIt(obj,e,p,del);
-            bw.ProgressChanged += Bw_Update1;
+            //bw.
+            //bw.RunWorkerCompleted += Bw_RunWorkerCompleted; //DoIt_Done();
+            
+            if (!bwInit)
+            {
+                bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
+                bw.ProgressChanged += Bw_Update1;
+                bw.DoWork += (obj, e) => DoIt(obj, e, p, del);
+                bwInit=true;
+            }
+            //bw.ProgressChanged += Bw_Update1;
             //object d = new{ p, del };
             //DoItThread.
             button1.Enabled = false;
@@ -214,6 +223,8 @@ namespace X_Live_SD_Splitter
             button3.Enabled = false;
             button4.Enabled = false;
             button5.Enabled = false;
+            if (pf.IsDisposed)
+                pf = new progressForm();
             pf.Show();
             bw.RunWorkerAsync();
             //DoItThread.Start();
@@ -235,12 +246,14 @@ namespace X_Live_SD_Splitter
                 if (i2 >= 0)
                 {
                     pf.SetBar1(i1, i2);
-                 }
+                }
                 else
                 {
                     if (i1 >=0)
                         pf.SetBar1(i1);
                 }
+                if (s.Length > 0)
+                    pf.SetText1(s);
 
             }
             if (Flag == 2)
@@ -254,6 +267,8 @@ namespace X_Live_SD_Splitter
                     if (i1 >= 0)
                         pf.SetBar2(i1);
                 }
+                if (s.Length > 0)
+                    pf.SetText2(s);
 
             }
             //  zed = e.Argument;
@@ -315,12 +330,12 @@ namespace X_Live_SD_Splitter
             inBuf = new List<byte[]>();
             for (int x=0; x<bufferFact; x++)
                 inBuf.Add(new byte[]{});
-            Bwu u = new Bwu(2, "", 0, fileList.Items.Count);
             int tick = 0;
+            bw.ReportProgress(0, new Bwu(2, "", tick++, fileList.Items.Count));
             foreach (string f in fileList.Items)
             {
                 
-                bw.ReportProgress(0, new Bwu(2, "", tick++, fileList.Items.Count));
+                bw.ReportProgress(0, new Bwu(2, f, -1, -1));
                 //StreamReader sr = new StreamReader(f);
                 BinaryReader br = new BinaryReader(File.OpenRead(f));
                 br.ReadBytes(32760);
@@ -334,7 +349,7 @@ namespace X_Live_SD_Splitter
                 for (int r = 0; r  < i; r+=bufferFact)
                 {
 
-                    bw.ReportProgress(0, new Bwu(1, "", r, (int)i));
+                    bw.ReportProgress(0, new Bwu(1, r + " of " + i, r, (int)i));
                     if ((i - r) < bufferFact)
                     {
                         for (int x = 0; x < (i-r); x++)
@@ -344,7 +359,7 @@ namespace X_Live_SD_Splitter
                             for (int xy = 0; xy < (i - r); xy++)
                             {
                                 inBuf[xy].CopyTo(dataBuf, 0);
-                                intBuf[xy * 3] = dataBuf[cl * 4 + 1];
+                                intBuf[xy * 3] = dataBuf[1 + cl * 4 ];
                                 intBuf[xy * 3+1] = dataBuf[2 + cl * 4];
                                 intBuf[xy * 3 + 2] = dataBuf[3 + cl * 4];
                             }
@@ -360,15 +375,19 @@ namespace X_Live_SD_Splitter
                             for (int xy = 0; xy < bufferFact; xy++)
                             {
                                 inBuf[xy].CopyTo(dataBuf, 0);
-                                intBuf[xy * 3] = dataBuf[cl * 4 + 1];
+                                intBuf[xy * 3] = dataBuf[1 + cl * 4];
                                 intBuf[xy * 3 + 1] = dataBuf[2 + cl * 4];
                                 intBuf[xy * 3 + 2] = dataBuf[3 + cl * 4];
                             }
                             bwa[cl].Write(intBuf);
                         }
                     }
+                    bw.ReportProgress(0, new Bwu(1, r + " of " + i, r, -1));
+
                 }
 
+                bw.ReportProgress(0, new Bwu(1, i + " of " + i, (int)i,-1));
+                bw.ReportProgress(0, new Bwu(2, tick + " of " + fileList.Items.Count, tick++, -1));
                 del.Invoke(DateTime.Now + " Complete->" + f);
             }
 
