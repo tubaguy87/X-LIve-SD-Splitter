@@ -114,8 +114,6 @@ namespace X_Live_SD_Splitter
                 return;
             }
 
-            //StreamReader sr = new StreamReader(sdCardOpener.FileName);
-            //BinaryReader br = new BinaryReader(sr.BaseStream);
             using (BinaryReader br = new BinaryReader(File.OpenRead(sdCardOpener.FileName)))
             {
                 uint s1 = br.ReadUInt32(); // session
@@ -129,7 +127,6 @@ namespace X_Live_SD_Splitter
                 uint s7 = br.ReadUInt32(); // total frames
 
                 uint s8 = br.ReadUInt32(); // samples in file 1
-                //br.Close();
                 sdData1.Rows.Add("SD" + sdData1.RowCount, s1, (int)s2, (int)s3, (int)s5, (float)s7 / s3, System.IO.Path.GetDirectoryName(sdCardOpener.FileName), s7);
             }
         }
@@ -271,9 +268,6 @@ namespace X_Live_SD_Splitter
                     pf.SetText2(s);
 
             }
-            //  zed = e.Argument;
-            //DoIt((string).p, (object)zed.del);
-            //throw new NotImplementedException();
         }
 
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -306,13 +300,10 @@ namespace X_Live_SD_Splitter
             //byte[] wav2 = new byte[] { 0x00, 0xDC, 0x05, 0x00, 0x04, 0x00, 0x20, 0x00, 0x64, 0x61, 0x74, 0x61 };
             byte[] wav2 = new byte[] { 0x00, 0xDC, 0x05, 0x00, 0x03, 0x00, 0x18, 0x00, 0x64, 0x61, 0x74, 0x61 }; //test 24 bit
 
-            //System.IO.StreamWriter[] swa =new System.IO.StreamWriter[32];
             System.IO.BinaryWriter[] bwa = new System.IO.BinaryWriter[32];
 
             foreach (  int cl in channelList.CheckedIndices)
             {
-                //swa[cl] = new System.IO.StreamWriter(p + "\\" + channelList.Items[cl] + ".wav");
-                //bwa[cl] = new System.IO.BinaryWriter(swa[cl].BaseStream);
                 bwa[cl] = new System.IO.BinaryWriter(File.OpenWrite(p + "\\" + channelList.Items[cl] + ".wav"));
             }
 
@@ -398,9 +389,9 @@ namespace X_Live_SD_Splitter
                 {
                     bwa[cl].Dispose();
                 }
-                catch
+                catch (Exception E)
                 {
-                    
+                    MessageBox.Show(E.Message);
                 }
             }
 
@@ -467,10 +458,10 @@ namespace X_Live_SD_Splitter
 
         private void channelList_DoubleClick(object sender, EventArgs e)
         {
-
             CheckedListBox se = (CheckedListBox)sender;
             {
-                //MessageBox.Show(se.Text);
+                if (se.SelectedIndex < 0)
+                    return;
                 string s = Microsoft.VisualBasic.Interaction.InputBox("Prompt", "Title", se.Text, -1, -1);
                 if (s.Length > 0)
                 {
