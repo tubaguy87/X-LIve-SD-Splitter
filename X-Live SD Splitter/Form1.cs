@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace X_Live_SD_Splitter
@@ -15,7 +12,6 @@ namespace X_Live_SD_Splitter
         public Form1()
         {
             InitializeComponent();
-
         }
 
         public class Bwu
@@ -25,15 +21,13 @@ namespace X_Live_SD_Splitter
             public int i1;
             public int i2;
 
-            public Bwu(int Flag,string s, int i1,int i2)
+            public Bwu(int Flag, string s, int i1, int i2)
             {
                 this.Flag = Flag;
                 this.s = s;
                 this.i1 = i1;
                 this.i2 = i2;
             }
-
-
         }
 
         BackgroundWorker bw = new BackgroundWorker();
@@ -41,7 +35,8 @@ namespace X_Live_SD_Splitter
         private delegate void ObjectDelegate(object obj);
         public static string Hexify(int x)
         {
-            switch (x) { 
+            switch (x)
+            {
                 case 1: return "01";
                 case 2: return "02";
                 case 3: return "03";
@@ -91,11 +86,7 @@ namespace X_Live_SD_Splitter
                 case 47: return "2F";
 
                 default: return "";
-
-
-
             }
-
         }
 
         uint totalFrames = new uint();
@@ -149,7 +140,7 @@ namespace X_Live_SD_Splitter
                 channelList.Items.Add("Channel " + x, true);
             }
 
-            foreach(DataGridViewRow dr in sdData1.Rows)
+            foreach (DataGridViewRow dr in sdData1.Rows)
             {
                 if (dr.Cells[1].Value == null)
                     continue;
@@ -166,7 +157,7 @@ namespace X_Live_SD_Splitter
                         MessageBox.Show("File " + fName + " is invalid");
                 }
             }
-            TimeSpan t = TimeSpan.FromSeconds((float)totalFrames/bitRate1);
+            TimeSpan t = TimeSpan.FromSeconds((float)totalFrames / bitRate1);
 
             string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms",
                             t.Hours,
@@ -204,13 +195,13 @@ namespace X_Live_SD_Splitter
             bw.WorkerReportsProgress = true;
             //bw.
             //bw.RunWorkerCompleted += Bw_RunWorkerCompleted; //DoIt_Done();
-            
+
             if (!bwInit)
             {
                 bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
                 bw.ProgressChanged += Bw_Update1;
                 bw.DoWork += (obj, e) => DoIt(obj, e, p, del);
-                bwInit=true;
+                bwInit = true;
             }
             //bw.ProgressChanged += Bw_Update1;
             //object d = new{ p, del };
@@ -233,10 +224,10 @@ namespace X_Live_SD_Splitter
             int a = s.ProgressPercentage;
             Bwu z = s.UserState as Bwu;
             Bw_Update(z.Flag, z.s, z.i1, z.i2);
-          
+
         }
 
-        private void Bw_Update(int Flag,string s,int i1=-1,int i2=-1)
+        private void Bw_Update(int Flag, string s, int i1 = -1, int i2 = -1)
         {
             if (Flag == 1)
             {
@@ -246,12 +237,11 @@ namespace X_Live_SD_Splitter
                 }
                 else
                 {
-                    if (i1 >=0)
+                    if (i1 >= 0)
                         pf.SetBar1(i1);
                 }
                 if (s.Length > 0)
                     pf.SetText1(s);
-
             }
             if (Flag == 2)
             {
@@ -266,7 +256,6 @@ namespace X_Live_SD_Splitter
                 }
                 if (s.Length > 0)
                     pf.SetText2(s);
-
             }
         }
 
@@ -275,13 +264,14 @@ namespace X_Live_SD_Splitter
             DoIt_Done();
             //throw new NotImplementedException();
         }
-        private void DoIt_Updated(int file,float percent)
+        /*        private void DoIt_Updated(int file,float percent)
+                {
+                   // progressForm.
+                    //throw new NotImplementedException();
+                }
+        */
+        void DoIt(object sender, DoWorkEventArgs e, string p, object obj)
         {
-           // progressForm.
-            //throw new NotImplementedException();
-        }
-
-        void DoIt(object sender, DoWorkEventArgs e ,string p,object obj) {
 
             ObjectDelegate del = (ObjectDelegate)obj;
 
@@ -291,67 +281,60 @@ namespace X_Live_SD_Splitter
             //uint dataLen = totalFrames * 4;
             uint dataLen = totalFrames * 3; //test 24 bit mode
             uint totalLen = dataLen + 38;
-            bufferFact = 10 * (int)bitRate1;
+            bufferFact = (int)bufferSeconds.Value * (int)bitRate1;
             bufferIter = (int)bitRate1;
-           
-            byte[] riff = new byte[] { 0x52, 0x49, 0x46, 0x46 };
-            byte[] wav = new byte[] { 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00 };
+
             //0x80, 0xBB, 0x00, 0x00
             //byte[] wav2 = new byte[] { 0x00, 0xDC, 0x05, 0x00, 0x04, 0x00, 0x20, 0x00, 0x64, 0x61, 0x74, 0x61 };
-            byte[] wav2 = new byte[] { 0x00, 0xDC, 0x05, 0x00, 0x03, 0x00, 0x18, 0x00, 0x64, 0x61, 0x74, 0x61 }; //test 24 bit
 
-            System.IO.BinaryWriter[] bwa = new System.IO.BinaryWriter[32];
+            BinaryWriter[] bwa = new BinaryWriter[32];
 
-            foreach (  int cl in channelList.CheckedIndices)
+            foreach (int cl in channelList.CheckedIndices)
             {
-                bwa[cl] = new System.IO.BinaryWriter(File.OpenWrite(p + "\\" + channelList.Items[cl] + ".wav"));
+                bwa[cl] = new BinaryWriter(File.OpenWrite(p + "\\" + channelList.Items[cl] + ".wav"));
             }
 
-            foreach (System.IO.BinaryWriter b in bwa )
+            foreach (BinaryWriter b in bwa)
             {
                 if (b == null)
                     continue;
-                b.Write(riff);
-                b.Write(totalLen);
-                b.Write(wav);
-                b.Write(bitRate1);
-                b.Write(wav2);
-                b.Write(dataLen);
+                Write_Wav_Header(b, bitRate1, totalLen, dataLen);
             }
+
             inBuf = new List<byte[]>();
-            for (int x=0; x<bufferFact; x++)
-                inBuf.Add(new byte[]{});
+            for (int x = 0; x < bufferFact; x++)
+                inBuf.Add(new byte[] { });
             int tick = 0;
             bw.ReportProgress(0, new Bwu(2, "", tick++, fileList.Items.Count));
             foreach (string f in fileList.Items)
             {
-                
+
                 bw.ReportProgress(0, new Bwu(2, f, -1, -1));
                 //StreamReader sr = new StreamReader(f);
                 BinaryReader br = new BinaryReader(File.OpenRead(f));
                 br.ReadBytes(32760);
                 string head = br.ReadChars(4).ToString();
                 uint i = br.ReadUInt32(); //read the datasize chunk
-                i = i/ ((uint)channels1*4); // 4 32bit samples per channel
-                 del.Invoke(DateTime.Now + " Processing->" + f);
+                i = i / ((uint)channels1 * 4); // 4 32bit samples per channel
+                del.Invoke(DateTime.Now + " Processing->" + f);
                 byte[] dataBuf = new byte[channels1 * 4];
                 byte[] intBuf = new byte[bufferFact * 3]; // test 24 bit
 
-                for (int r = 0; r  < i; r+=bufferFact)
+                for (int r = 0; r < i; r += bufferFact)
                 {
 
                     bw.ReportProgress(0, new Bwu(1, r + " of " + i, r, (int)i));
                     if ((i - r) < bufferFact)
                     {
-                        for (int x = 0; x < (i-r); x++)
+                        for (int x = 0; x < (i - r); x++)
                             inBuf[x] = br.ReadBytes(channels1 * 4);
                         foreach (int cl in channelList.CheckedIndices)
                         {
                             for (int xy = 0; xy < (i - r); xy++)
                             {
                                 inBuf[xy].CopyTo(dataBuf, 0);
-                                intBuf[xy * 3] = dataBuf[1 + cl * 4 ];
-                                intBuf[xy * 3+1] = dataBuf[2 + cl * 4];
+                                intBuf[xy * 3] = dataBuf[1 + cl * 4];
+                                intBuf[xy * 3 + 1] = dataBuf[2 + cl * 4];
                                 intBuf[xy * 3 + 2] = dataBuf[3 + cl * 4];
                             }
                             bwa[cl].Write(intBuf, 0, ((int)i - r) * 3);
@@ -377,7 +360,7 @@ namespace X_Live_SD_Splitter
 
                 }
 
-                bw.ReportProgress(0, new Bwu(1, i + " of " + i, (int)i,-1));
+                bw.ReportProgress(0, new Bwu(1, i + " of " + i, (int)i, -1));
                 bw.ReportProgress(0, new Bwu(2, tick + " of " + fileList.Items.Count, tick++, -1));
                 del.Invoke(DateTime.Now + " Complete->" + f);
             }
@@ -399,7 +382,19 @@ namespace X_Live_SD_Splitter
             Thread.Sleep(1000);
         }
 
-   
+        private void Write_Wav_Header(BinaryWriter b, uint br, uint totalLen, uint dataLen)
+        {
+            byte[] riff = new byte[] { 0x52, 0x49, 0x46, 0x46 };
+            byte[] wav = new byte[] { 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00 };
+            byte[] wav2 = new byte[] { 0x00, 0xDC, 0x05, 0x00, 0x03, 0x00, 0x18, 0x00, 0x64, 0x61, 0x74, 0x61 }; //test 24 bit
+            b.Write(riff);
+            b.Write(totalLen);
+            b.Write(wav);
+            b.Write(bitRate1);
+            b.Write(wav2);
+            b.Write(dataLen);
+        }
+
         private void sdData1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             isValidated = false;
@@ -414,7 +409,7 @@ namespace X_Live_SD_Splitter
         {
             if (InvokeRequired)
             {
-               
+
                 // we then create the delegate again
                 // if you've made it global then you won't need to do this
                 ObjectDelegate method = new ObjectDelegate(writeLog);
@@ -425,12 +420,13 @@ namespace X_Live_SD_Splitter
             // ok so now we're here, this means we're able to update the control
             // so we unbox the object into a string
             string text = (string)obj;
-            logBox.Text += text + "\r\n";
+            logBox.AppendText( text + "\r\n");
+            //logBox.p
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            
+
             for (int i = 0; i < channelList.Items.Count; i++)
             {
                 channelList.SetItemChecked(i, true);
@@ -462,7 +458,7 @@ namespace X_Live_SD_Splitter
             {
                 if (se.SelectedIndex < 0)
                     return;
-                string s = Microsoft.VisualBasic.Interaction.InputBox("Prompt", "Title", se.Text, -1, -1);
+                string s = Microsoft.VisualBasic.Interaction.InputBox("Enter new name for channel " + (se.SelectedIndex + 1), "Name Channel " + (se.SelectedIndex+1), se.Text, -1, -1);
                 if (s.Length > 0)
                 {
                     channelList.Items[se.SelectedIndex] = s;
@@ -479,5 +475,10 @@ namespace X_Live_SD_Splitter
             button4.Enabled = true;
             button5.Enabled = true;
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
-}   
+}

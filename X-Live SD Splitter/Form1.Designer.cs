@@ -42,6 +42,8 @@
             this.frames = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fileList = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.bufferSeconds = new System.Windows.Forms.NumericUpDown();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -53,6 +55,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             ((System.ComponentModel.ISupportInitialize)(this.sdData1)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bufferSeconds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -70,15 +73,17 @@
             this.channelList.CheckOnClick = true;
             this.channelList.Dock = System.Windows.Forms.DockStyle.Right;
             this.channelList.FormattingEnabled = true;
-            this.channelList.Location = new System.Drawing.Point(845, 0);
+            this.channelList.Location = new System.Drawing.Point(844, 0);
             this.channelList.Name = "channelList";
-            this.channelList.Size = new System.Drawing.Size(202, 688);
+            this.channelList.Size = new System.Drawing.Size(202, 540);
             this.channelList.TabIndex = 1;
             this.channelList.DoubleClick += new System.EventHandler(this.channelList_DoubleClick);
             // 
             // sdData1
             // 
             this.sdData1.AllowUserToAddRows = false;
+            this.sdData1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.sdData1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.sdData1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.card,
@@ -89,11 +94,10 @@
             this.length,
             this.path,
             this.frames});
-            this.sdData1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sdData1.Location = new System.Drawing.Point(0, 0);
+            this.sdData1.Location = new System.Drawing.Point(0, 87);
             this.sdData1.Name = "sdData1";
             this.sdData1.ReadOnly = true;
-            this.sdData1.Size = new System.Drawing.Size(845, 99);
+            this.sdData1.Size = new System.Drawing.Size(844, 125);
             this.sdData1.TabIndex = 2;
             this.sdData1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.sdData1_RowsAdded);
             this.sdData1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.sdData1_RowsRemoved);
@@ -148,33 +152,61 @@
             // 
             // fileList
             // 
-            this.fileList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.fileList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileList.FormattingEnabled = true;
-            this.fileList.Location = new System.Drawing.Point(3, 3);
+            this.fileList.Location = new System.Drawing.Point(0, 0);
             this.fileList.Name = "fileList";
-            this.fileList.Size = new System.Drawing.Size(391, 537);
+            this.fileList.Size = new System.Drawing.Size(347, 330);
             this.fileList.TabIndex = 5;
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.bufferSeconds);
             this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.button1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 99);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(845, 39);
+            this.panel1.Size = new System.Drawing.Size(844, 89);
             this.panel1.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(93, 47);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Buffer Seconds";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // bufferSeconds
+            // 
+            this.bufferSeconds.Location = new System.Drawing.Point(179, 44);
+            this.bufferSeconds.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.bufferSeconds.Name = "bufferSeconds";
+            this.bufferSeconds.Size = new System.Drawing.Size(38, 20);
+            this.bufferSeconds.TabIndex = 11;
+            this.bufferSeconds.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             // 
             // button5
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.Location = new System.Drawing.Point(736, 13);
+            this.button5.Location = new System.Drawing.Point(757, 44);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 10;
@@ -185,7 +217,7 @@
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(655, 13);
+            this.button4.Location = new System.Drawing.Point(757, 11);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 9;
@@ -198,14 +230,14 @@
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(255, 15);
+            this.textBox1.Location = new System.Drawing.Point(179, 11);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(364, 20);
+            this.textBox1.Size = new System.Drawing.Size(563, 20);
             this.textBox1.TabIndex = 8;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(174, 12);
+            this.button3.Location = new System.Drawing.Point(93, 12);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 7;
@@ -215,7 +247,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(93, 12);
+            this.button2.Location = new System.Drawing.Point(12, 41);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 6;
@@ -235,15 +267,15 @@
             // 
             // logBox
             // 
-            this.logBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.logBox.Location = new System.Drawing.Point(-1, 3);
+            this.logBox.BackColor = System.Drawing.SystemColors.Control;
+            this.logBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.logBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logBox.Location = new System.Drawing.Point(0, 0);
             this.logBox.Multiline = true;
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
             this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.logBox.Size = new System.Drawing.Size(433, 540);
+            this.logBox.Size = new System.Drawing.Size(493, 330);
             this.logBox.TabIndex = 8;
             this.logBox.WordWrap = false;
             // 
@@ -252,7 +284,7 @@
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(0, 141);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 210);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -262,25 +294,26 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.logBox);
-            this.splitContainer1.Size = new System.Drawing.Size(845, 547);
-            this.splitContainer1.SplitterDistance = 397;
+            this.splitContainer1.Size = new System.Drawing.Size(844, 330);
+            this.splitContainer1.SplitterDistance = 347;
             this.splitContainer1.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1047, 688);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.sdData1);
+            this.ClientSize = new System.Drawing.Size(1046, 540);
             this.Controls.Add(this.channelList);
             this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.sdData1);
+            this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "XLive SD Splitter";
             ((System.ComponentModel.ISupportInitialize)(this.sdData1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bufferSeconds)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -314,6 +347,8 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown bufferSeconds;
     }
 }
 
