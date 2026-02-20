@@ -1,7 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
+using System;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -12,6 +13,8 @@ namespace X_Live_SD_Splitter
         public Form1()
         {
             InitializeComponent();
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            Text = string.Format("XLive SD Splitter  v{0}.{1}.{2}", version.Major, version.Minor, version.Build);
         }
 
         public class Bwu
@@ -30,7 +33,7 @@ namespace X_Live_SD_Splitter
             }
         }
 
-        BackgroundWorker bw = new BackgroundWorker();
+        BackgroundWorker bw;
         private progressForm pf = new progressForm();
         private delegate void ObjectDelegate(object obj);
         public static string Hexify(int x)
@@ -93,33 +96,74 @@ namespace X_Live_SD_Splitter
         uint bitRate1 = new uint();
         int channels1 = new int();
         int bufferFact = new int();
+        List<byte[]> inBuf;
         int bufferIter = new int();
         bool isValidated = false;
         bool bwInit = false;
-        List<byte[]> inBuf;
         private void button1_Click(object sender, EventArgs e)
         {
             isValidated = false;
             if (sdCardOpener.ShowDialog() != DialogResult.OK)
-            {
                 return;
-            }
+            AddCardFromFile(sdCardOpener.FileName);
+        }
 
-            using (BinaryReader br = new BinaryReader(File.OpenRead(sdCardOpener.FileName)))
+        /// <summary>
+        /// Reads session header from a card file and adds one row to sdData1. Sets channels1 and bitRate1.
+        /// Returns true if the row was added, false if the file could not be read.
+        /// </summary>
+        private bool AddCardFromFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return false;
+            try
             {
-                uint s1 = br.ReadUInt32(); // session
-                uint s2 = br.ReadUInt32(); // channels
-                channels1 = (int)s2;
-                uint s3 = br.ReadUInt32(); // bitrate
-                bitRate1 = s3;
-                uint s4 = br.ReadUInt32(); // session again
-                uint s5 = br.ReadUInt32(); // files
-                uint s6 = br.ReadUInt32(); // something
-                uint s7 = br.ReadUInt32(); // total frames
-
-                uint s8 = br.ReadUInt32(); // samples in file 1
-                sdData1.Rows.Add("SD" + sdData1.RowCount, s1, (int)s2, (int)s3, (int)s5, (float)s7 / s3, System.IO.Path.GetDirectoryName(sdCardOpener.FileName), s7);
+                using (BinaryReader br = new BinaryReader(File.OpenRead(filePath)))
+                {
+                    uint s1 = br.ReadUInt32(); // session
+                    uint s2 = br.ReadUInt32(); // channels
+                    channels1 = (int)s2;
+                    uint s3 = br.ReadUInt32(); // bitrate
+                    bitRate1 = s3;
+                    uint s4 = br.ReadUInt32(); // session again
+                    uint s5 = br.ReadUInt32(); // files
+                    uint s6 = br.ReadUInt32(); // something
+                    uint s7 = br.ReadUInt32(); // total frames
+                    uint s8 = br.ReadUInt32(); // samples in file 1
+                    sdData1.Rows.Add("SD" + sdData1.RowCount, s1, (int)s2, (int)s3, (int)s5, (float)s7 / s3, Path.GetDirectoryName(filePath), s7);
+                }
+                isValidated = false;
+                return true;
             }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void sdData1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void sdData1_DragDrop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                return;
+            string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            int added = 0;
+            foreach (string path in paths)
+            {
+                if (string.IsNullOrWhiteSpace(path)) continue;
+                if (File.Exists(path) && string.Equals(Path.GetExtension(path), ".bin", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (AddCardFromFile(path))
+                        added++;
+                }
+            }
+            if (added > 0 && added < paths.Length)
+                MessageBox.Show(string.Format("Added {0} card(s). Some files were skipped (not .bin or invalid).", added), "Drag and drop", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -192,6 +236,7 @@ namespace X_Live_SD_Splitter
                 DoIt(p,del);
             });
             */
+            bw = new BackgroundWorker();
             bw.WorkerReportsProgress = true;
             //bw.
             //bw.RunWorkerCompleted += Bw_RunWorkerCompleted; //DoIt_Done();
@@ -289,95 +334,93 @@ namespace X_Live_SD_Splitter
 
             BinaryWriter[] bwa = new BinaryWriter[32];
 
+            bool stat = false ;
             foreach (int cl in channelList.CheckedIndices)
             {
-                bwa[cl] = new BinaryWriter(File.OpenWrite(p + "\\" + channelList.Items[cl] + ".wav"));
-            }
-
-            foreach (BinaryWriter b in bwa)
-            {
-                if (b == null)
+                if (File.Exists(p + "\\" + channelList.Items[cl] + ".wav"))
+                {
+                    Console.WriteLine(p + "\\" + channelList.Items[cl] + ".wav File Exists....");
                     continue;
-                Write_Wav_Header(b, bitRate1, totalLen, dataLen);
+                }
+                bwa[cl] = new BinaryWriter(File.OpenWrite(p + "\\" + channelList.Items[cl] + ".wav"));
+                stat = true;
             }
 
-            inBuf = new List<byte[]>();
-            for (int x = 0; x < bufferFact; x++)
-                inBuf.Add(new byte[] { });
-            int tick = 0;
-            bw.ReportProgress(0, new Bwu(2, "", tick++, fileList.Items.Count));
-            foreach (string f in fileList.Items)
+            if (stat)
             {
-
-                bw.ReportProgress(0, new Bwu(2, f, -1, -1));
-                //StreamReader sr = new StreamReader(f);
-                BinaryReader br = new BinaryReader(File.OpenRead(f));
-                br.ReadBytes(32760);
-                string head = br.ReadChars(4).ToString();
-                uint i = br.ReadUInt32(); //read the datasize chunk
-                i = i / ((uint)channels1 * 4); // 4 32bit samples per channel
-                del.Invoke(DateTime.Now + " Processing->" + f);
-                byte[] dataBuf = new byte[channels1 * 4];
-                byte[] intBuf = new byte[bufferFact * 3]; // test 24 bit
-
-                for (int r = 0; r < i; r += bufferFact)
+                foreach (BinaryWriter b in bwa)
                 {
+                    if (b == null)
+                        continue;
+                    Write_Wav_Header(b, bitRate1, totalLen, dataLen);
+                }
 
-                    bw.ReportProgress(0, new Bwu(1, r + " of " + i, r, (int)i));
-                    if ((i - r) < bufferFact)
+                int tick = 0;
+                bw.ReportProgress(0, new Bwu(2, "", tick++, fileList.Items.Count));
+                foreach (string f in fileList.Items)
+                {
+                    bw.ReportProgress(0, new Bwu(2, f, -1, -1));
+                    uint i;
+                    // Use a large buffer and SequentialScan for much faster sequential reads
+                    const int fileStreamBufferSize = 256 * 1024; // 256 KB read buffer
+                    using (var fs = new FileStream(f, FileMode.Open, FileAccess.Read, FileShare.Read, fileStreamBufferSize, FileOptions.SequentialScan))
+                    using (BinaryReader br = new BinaryReader(fs))
                     {
-                        for (int x = 0; x < (i - r); x++)
-                            inBuf[x] = br.ReadBytes(channels1 * 4);
-                        foreach (int cl in channelList.CheckedIndices)
+                        br.ReadBytes(32760);
+                        string head = br.ReadChars(4).ToString();
+                        uint dataChunk = br.ReadUInt32(); //read the datasize chunk
+                        i = dataChunk / ((uint)channels1 * 4); // 4 32bit samples per channel
+                        del.Invoke(DateTime.Now + " Processing->" + f);
+                        int frameSize = channels1 * 4;
+                        byte[] intBuf = new byte[bufferFact * 3]; // 24 bit per sample
+
+                        for (uint r = 0; r < i; r += (uint)bufferFact)
                         {
-                            for (int xy = 0; xy < (i - r); xy++)
+                            int toRead = (int)Math.Min(bufferFact, i - r);
+                            // One bulk read instead of thousands of tiny ReadBytes(channelSize) calls
+                            byte[] block = br.ReadBytes(toRead * frameSize);
+                            if (block.Length == 0) break;
+
+                            foreach (int cl in channelList.CheckedIndices)
                             {
-                                inBuf[xy].CopyTo(dataBuf, 0);
-                                intBuf[xy * 3] = dataBuf[1 + cl * 4];
-                                intBuf[xy * 3 + 1] = dataBuf[2 + cl * 4];
-                                intBuf[xy * 3 + 2] = dataBuf[3 + cl * 4];
+                                int srcOffset = 1 + cl * 4; // skip low byte, take 3 bytes per channel
+                                for (int xy = 0; xy < toRead; xy++)
+                                {
+                                    int off = xy * frameSize + srcOffset;
+                                    intBuf[xy * 3] = block[off];
+                                    intBuf[xy * 3 + 1] = block[off + 1];
+                                    intBuf[xy * 3 + 2] = block[off + 2];
+                                }
+                                bwa[cl].Write(intBuf, 0, toRead * 3);
                             }
-                            bwa[cl].Write(intBuf, 0, ((int)i - r) * 3);
+
+                            bw.ReportProgress(0, new Bwu(1, r + toRead + " of " + i, (int)(r + toRead), (int)i));
                         }
                     }
-                    else
+                    bw.ReportProgress(0, new Bwu(1, i + " of " + i, (int)i, -1));
+                    bw.ReportProgress(0, new Bwu(2, tick + " of " + fileList.Items.Count, tick++, -1));
+                    del.Invoke(DateTime.Now + " Complete->" + f);
+                }
+                // Fin .. Let's clean up
+
+
+                foreach (int cl in channelList.CheckedIndices)
+                {
+                    bwa[cl].Close();
+                    try
                     {
-                        for (int x = 0; x < bufferFact; x++)
-                            inBuf[x] = br.ReadBytes(channels1 * 4);
-                        foreach (int cl in channelList.CheckedIndices)
-                        {
-                            for (int xy = 0; xy < bufferFact; xy++)
-                            {
-                                inBuf[xy].CopyTo(dataBuf, 0);
-                                intBuf[xy * 3] = dataBuf[1 + cl * 4];
-                                intBuf[xy * 3 + 1] = dataBuf[2 + cl * 4];
-                                intBuf[xy * 3 + 2] = dataBuf[3 + cl * 4];
-                            }
-                            bwa[cl].Write(intBuf);
-                        }
+                        bwa[cl].Dispose();
+                        bwa[cl] = null;
                     }
-                    bw.ReportProgress(0, new Bwu(1, r + " of " + i, r, -1));
-
+                    catch (Exception E)
+                    {
+                        MessageBox.Show(E.Message);
+                    }
                 }
-
-                bw.ReportProgress(0, new Bwu(1, i + " of " + i, (int)i, -1));
-                bw.ReportProgress(0, new Bwu(2, tick + " of " + fileList.Items.Count, tick++, -1));
-                del.Invoke(DateTime.Now + " Complete->" + f);
+                for (int tik = 0; tik < bwa.Length; tik++)
+                    bwa[tik] = null;
+                bwa = null;
             }
-
-            foreach (int cl in channelList.CheckedIndices)
-            {
-                bwa[cl].Close();
-                try
-                {
-                    bwa[cl].Dispose();
-                }
-                catch (Exception E)
-                {
-                    MessageBox.Show(E.Message);
-                }
-            }
-
             del.Invoke(DateTime.Now + " Splitting Complete!");
             Thread.Sleep(1000);
         }
@@ -402,6 +445,34 @@ namespace X_Live_SD_Splitter
 
         private void sdData1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
+            isValidated = false;
+        }
+
+        private void fileList_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void fileList_DragDrop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                return;
+            string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string path in paths)
+            {
+                if (string.IsNullOrWhiteSpace(path)) continue;
+                if (File.Exists(path))
+                {
+                    if (string.Equals(Path.GetExtension(path), ".wav", StringComparison.OrdinalIgnoreCase))
+                        fileList.Items.Add(path);
+                }
+                else if (Directory.Exists(path))
+                {
+                    foreach (string f in Directory.GetFiles(path, "*.wav"))
+                        fileList.Items.Add(f);
+                }
+            }
             isValidated = false;
         }
 
@@ -474,9 +545,23 @@ namespace X_Live_SD_Splitter
             button3.Enabled = true;
             button4.Enabled = true;
             button5.Enabled = true;
+            pf.Close();
+            string p = outputFolderOpener.SelectedPath; //System.IO.Path.GetDirectoryName(sdCard1.FileName);
+            ObjectDelegate del = new ObjectDelegate(writeLog);
+            {
+                bw.RunWorkerCompleted -= Bw_RunWorkerCompleted;
+                bw.ProgressChanged -= Bw_Update1;
+                bw.DoWork -= (obj, e) => DoIt(obj, e, p, del);
+                bwInit = false;
+            }
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bufferSeconds_ValueChanged(object sender, EventArgs e)
         {
 
         }

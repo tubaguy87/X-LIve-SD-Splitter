@@ -1,4 +1,4 @@
-﻿namespace X_Live_SD_Splitter
+namespace X_Live_SD_Splitter
 {
     partial class Form1
     {
@@ -81,6 +81,7 @@
             // 
             // sdData1
             // 
+            this.sdData1.AllowDrop = true;
             this.sdData1.AllowUserToAddRows = false;
             this.sdData1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -99,6 +100,8 @@
             this.sdData1.ReadOnly = true;
             this.sdData1.Size = new System.Drawing.Size(844, 125);
             this.sdData1.TabIndex = 2;
+            this.sdData1.DragDrop += new System.Windows.Forms.DragEventHandler(this.sdData1_DragDrop);
+            this.sdData1.DragEnter += new System.Windows.Forms.DragEventHandler(this.sdData1_DragEnter);
             this.sdData1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.sdData1_RowsAdded);
             this.sdData1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.sdData1_RowsRemoved);
             // 
@@ -152,12 +155,15 @@
             // 
             // fileList
             // 
+            this.fileList.AllowDrop = true;
             this.fileList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileList.FormattingEnabled = true;
             this.fileList.Location = new System.Drawing.Point(0, 0);
             this.fileList.Name = "fileList";
             this.fileList.Size = new System.Drawing.Size(347, 330);
             this.fileList.TabIndex = 5;
+            this.fileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.fileList_DragDrop);
+            this.fileList.DragEnter += new System.Windows.Forms.DragEventHandler(this.fileList_DragEnter);
             // 
             // panel1
             // 
@@ -202,6 +208,7 @@
             0,
             0,
             0});
+            this.bufferSeconds.ValueChanged += new System.EventHandler(this.bufferSeconds_ValueChanged);
             // 
             // button5
             // 
