@@ -1,4 +1,4 @@
-﻿namespace X_Live_SD_Splitter
+namespace X_Live_SD_Splitter
 {
     partial class progressForm
     {
@@ -28,60 +28,60 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.progressBar2 = new System.Windows.Forms.ProgressBar();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.progressBarCurrentFile = new System.Windows.Forms.ProgressBar();
+            this.progressBarOverall = new System.Windows.Forms.ProgressBar();
+            this.lblCurrentFileProgress = new System.Windows.Forms.Label();
+            this.lblOverallProgress = new System.Windows.Forms.Label();
+            this.btnHide = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // progressBar1
+            // progressBarCurrentFile
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.progressBarCurrentFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(0, 35);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(225, 23);
-            this.progressBar1.TabIndex = 0;
+            this.progressBarCurrentFile.Location = new System.Drawing.Point(0, 35);
+            this.progressBarCurrentFile.Name = "progressBarCurrentFile";
+            this.progressBarCurrentFile.Size = new System.Drawing.Size(225, 23);
+            this.progressBarCurrentFile.TabIndex = 0;
             // 
-            // progressBar2
+            // progressBarOverall
             // 
-            this.progressBar2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.progressBarOverall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar2.Location = new System.Drawing.Point(0, 83);
-            this.progressBar2.Name = "progressBar2";
-            this.progressBar2.Size = new System.Drawing.Size(225, 23);
-            this.progressBar2.TabIndex = 1;
+            this.progressBarOverall.Location = new System.Drawing.Point(0, 83);
+            this.progressBarOverall.Name = "progressBarOverall";
+            this.progressBarOverall.Size = new System.Drawing.Size(225, 23);
+            this.progressBarOverall.TabIndex = 1;
             // 
-            // label1
+            // lblCurrentFileProgress
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 16);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "label1";
+            this.lblCurrentFileProgress.AutoSize = true;
+            this.lblCurrentFileProgress.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCurrentFileProgress.Location = new System.Drawing.Point(12, 9);
+            this.lblCurrentFileProgress.Name = "lblCurrentFileProgress";
+            this.lblCurrentFileProgress.Size = new System.Drawing.Size(45, 16);
+            this.lblCurrentFileProgress.TabIndex = 4;
+            this.lblCurrentFileProgress.Text = "label1";
             // 
-            // label2
+            // lblOverallProgress
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 65);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 16);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "label2";
+            this.lblOverallProgress.AutoSize = true;
+            this.lblOverallProgress.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOverallProgress.Location = new System.Drawing.Point(12, 65);
+            this.lblOverallProgress.Name = "lblOverallProgress";
+            this.lblOverallProgress.Size = new System.Drawing.Size(45, 16);
+            this.lblOverallProgress.TabIndex = 5;
+            this.lblOverallProgress.Text = "label2";
             // 
-            // button1
+            // btnHide
             // 
-            this.button1.Location = new System.Drawing.Point(58, 123);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Hide";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnHide.Location = new System.Drawing.Point(58, 123);
+            this.btnHide.Name = "btnHide";
+            this.btnHide.Size = new System.Drawing.Size(75, 23);
+            this.btnHide.TabIndex = 6;
+            this.btnHide.Text = "Hide";
+            this.btnHide.UseVisualStyleBackColor = true;
+            this.btnHide.Click += new System.EventHandler(this.btnHide_Click);
             // 
             // progressForm
             // 
@@ -89,11 +89,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(226, 158);
             this.ControlBox = false;
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.progressBar2);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.btnHide);
+            this.Controls.Add(this.lblOverallProgress);
+            this.Controls.Add(this.lblCurrentFileProgress);
+            this.Controls.Add(this.progressBarOverall);
+            this.Controls.Add(this.progressBarCurrentFile);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "progressForm";
@@ -108,10 +108,10 @@
 
         #endregion
 
-        public System.Windows.Forms.ProgressBar progressBar1;
-        public System.Windows.Forms.ProgressBar progressBar2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.ProgressBar progressBarCurrentFile;
+        public System.Windows.Forms.ProgressBar progressBarOverall;
+        private System.Windows.Forms.Label lblCurrentFileProgress;
+        private System.Windows.Forms.Label lblOverallProgress;
+        private System.Windows.Forms.Button btnHide;
     }
 }

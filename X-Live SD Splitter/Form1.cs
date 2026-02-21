@@ -108,6 +108,93 @@ namespace X_Live_SD_Splitter
             }
         }
 
+        private string GetSelectedPresetFilePath()
+        {
+            if (presetCombo.SelectedItem == null) return null;
+            string name = presetCombo.SelectedItem.ToString();
+            if (string.IsNullOrWhiteSpace(name)) return null;
+            string safeName = string.Join("_", name.Split(Path.GetInvalidFileNameChars())).Trim();
+            if (string.IsNullOrEmpty(safeName)) return null;
+            return Path.Combine(GetPresetDirectory(), safeName + ".txt");
+        }
+
+        private void btnRenamePreset_Click(object sender, EventArgs e)
+        {
+            if (presetCombo.SelectedItem == null)
+            {
+                MessageBox.Show("Select a preset to rename.", "Rename Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string currentPath = GetSelectedPresetFilePath();
+            if (currentPath == null || !File.Exists(currentPath))
+            {
+                MessageBox.Show("Preset file not found.", "Rename Preset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            string currentName = presetCombo.SelectedItem.ToString();
+            string newName = Microsoft.VisualBasic.Interaction.InputBox("Enter new name for this preset:", "Rename Preset", currentName, -1, -1);
+            if (string.IsNullOrWhiteSpace(newName) || newName == currentName)
+                return;
+            string safeNew = string.Join("_", newName.Split(Path.GetInvalidFileNameChars())).Trim();
+            if (string.IsNullOrEmpty(safeNew)) safeNew = "Preset";
+            string newPath = Path.Combine(GetPresetDirectory(), safeNew + ".txt");
+            if (File.Exists(newPath))
+            {
+                MessageBox.Show("A preset with that name already exists.", "Rename Preset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            try
+            {
+                File.Move(currentPath, newPath);
+                RefreshPresetList();
+                for (int i = 0; i < presetCombo.Items.Count; i++)
+                {
+                    if (string.Equals(presetCombo.Items[i].ToString(), safeNew, StringComparison.OrdinalIgnoreCase))
+                    {
+                        presetCombo.SelectedIndex = i;
+                        break;
+                    }
+                }
+                MessageBox.Show("Preset renamed.", "Rename Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not rename preset: " + ex.Message, "Rename Preset", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnDeletePreset_Click(object sender, EventArgs e)
+        {
+            if (presetCombo.SelectedItem == null)
+            {
+                MessageBox.Show("Select a preset to delete.", "Delete Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string path = GetSelectedPresetFilePath();
+            if (path == null || !File.Exists(path))
+            {
+                MessageBox.Show("Preset file not found.", "Delete Preset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            var result = MessageBox.Show(
+                "Delete the preset \"" + presetCombo.SelectedItem.ToString() + "\"? This cannot be undone.",
+                "Delete Preset",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result != DialogResult.Yes)
+                return;
+            try
+            {
+                File.Delete(path);
+                RefreshPresetList();
+                MessageBox.Show("Preset deleted.", "Delete Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not delete preset: " + ex.Message, "Delete Preset", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         public class Bwu
         {
             public int Flag;
@@ -191,7 +278,7 @@ namespace X_Live_SD_Splitter
         int bufferIter = new int();
         bool isValidated = false;
         bool bwInit = false;
-        private void button1_Click(object sender, EventArgs e)
+        private void btnAddCard_Click(object sender, EventArgs e)
         {
             isValidated = false;
             if (sdCardOpener.ShowDialog() != DialogResult.OK)
@@ -200,7 +287,7 @@ namespace X_Live_SD_Splitter
         }
 
         /// <summary>
-        /// Reads session header from a card file and adds one row to sdData1. Sets channels1 and bitRate1.
+        /// Reads session header from a card file and adds one row to gridSdCards. Sets channels1 and bitRate1.
         /// Returns true if the row was added, false if the file could not be read.
         /// </summary>
         private bool AddCardFromFile(string filePath)
@@ -221,7 +308,7 @@ namespace X_Live_SD_Splitter
                     uint s6 = br.ReadUInt32(); // something
                     uint s7 = br.ReadUInt32(); // total frames
                     uint s8 = br.ReadUInt32(); // samples in file 1
-                    sdData1.Rows.Add("SD" + sdData1.RowCount, s1, (int)s2, (int)s3, (int)s5, (float)s7 / s3, Path.GetDirectoryName(filePath), s7);
+                    gridSdCards.Rows.Add("SD" + gridSdCards.RowCount, s1, (int)s2, (int)s3, (int)s5, (float)s7 / s3, Path.GetDirectoryName(filePath), s7);
                 }
                 isValidated = false;
                 return true;
@@ -232,13 +319,13 @@ namespace X_Live_SD_Splitter
             }
         }
 
-        private void sdData1_DragEnter(object sender, DragEventArgs e)
+        private void gridSdCards_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effect = DragDropEffects.Copy;
         }
 
-        private void sdData1_DragDrop(object sender, DragEventArgs e)
+        private void gridSdCards_DragDrop(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return;
@@ -258,24 +345,24 @@ namespace X_Live_SD_Splitter
         }
 
 
-        private void Verify_Click(object sender, EventArgs e)
+        private void btnValidate_Click(object sender, EventArgs e)
         {
             channelList.Items.Clear();
             fileList.Items.Clear();
             totalFrames = 0;
-            if (sdData1.Rows.Count < 1)
+            if (gridSdCards.Rows.Count < 1)
             {
                 MessageBox.Show("Add Card(s) First");
                 return;
             }
 
-            for (int x = 1; x <= (int)sdData1.Rows[0].Cells[2].Value; x++)
+            for (int x = 1; x <= (int)gridSdCards.Rows[0].Cells[2].Value; x++)
             {
 
                 channelList.Items.Add("Channel " + x.ToString("D2"), true);
             }
 
-            foreach (DataGridViewRow dr in sdData1.Rows)
+            foreach (DataGridViewRow dr in gridSdCards.Rows)
             {
                 if (dr.Cells[1].Value == null)
                     continue;
@@ -299,11 +386,11 @@ namespace X_Live_SD_Splitter
                             t.Minutes,
                             t.Seconds,
                             t.Milliseconds);
-            textBox1.Text = "Total Frames: " + totalFrames + " Total Time: " + answer;
+            summaryTextBox.Text = "Total Frames: " + totalFrames + " Total Time: " + answer;
             isValidated = true;
         }
 
-        private void button3_Click(object sender, EventArgs ef)
+        private void btnProcess_Click(object sender, EventArgs ef)
         {
             if (!isValidated)
             {
@@ -342,11 +429,11 @@ namespace X_Live_SD_Splitter
             //bw.ProgressChanged += Bw_Update1;
             //object d = new{ p, del };
             //DoItThread.
-            button1.Enabled = false;
-            button2.Enabled = false;
-            button3.Enabled = false;
-            button4.Enabled = false;
-            button5.Enabled = false;
+            btnAddCard.Enabled = false;
+            btnValidate.Enabled = false;
+            btnProcess.Enabled = false;
+            btnCheckAllChannels.Enabled = false;
+            btnClearAllChannels.Enabled = false;
             if (pf.IsDisposed)
                 pf = new progressForm();
             pf.Show();
@@ -529,12 +616,12 @@ namespace X_Live_SD_Splitter
             b.Write(dataLen);
         }
 
-        private void sdData1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void gridSdCards_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             isValidated = false;
         }
 
-        private void sdData1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        private void gridSdCards_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             isValidated = false;
         }
@@ -586,7 +673,7 @@ namespace X_Live_SD_Splitter
             //logBox.p
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void btnCheckAllChannels_Click(object sender, EventArgs e)
         {
 
             for (int i = 0; i < channelList.Items.Count; i++)
@@ -595,7 +682,7 @@ namespace X_Live_SD_Splitter
             }
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void btnClearAllChannels_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < channelList.Items.Count; i++)
             {
@@ -632,11 +719,11 @@ namespace X_Live_SD_Splitter
 
         private void DoIt_Done()
         {
-            button1.Enabled = true;
-            button2.Enabled = true;
-            button3.Enabled = true;
-            button4.Enabled = true;
-            button5.Enabled = true;
+            btnAddCard.Enabled = true;
+            btnValidate.Enabled = true;
+            btnProcess.Enabled = true;
+            btnCheckAllChannels.Enabled = true;
+            btnClearAllChannels.Enabled = true;
             pf.Close();
             string p = outputFolderOpener.SelectedPath; //System.IO.Path.GetDirectoryName(sdCard1.FileName);
             ObjectDelegate del = new ObjectDelegate(writeLog);
@@ -648,7 +735,7 @@ namespace X_Live_SD_Splitter
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void lblBufferSeconds_Click(object sender, EventArgs e)
         {
 
         }

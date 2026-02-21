@@ -34,8 +34,10 @@ namespace X_Live_SD_Splitter
             this.presetCombo = new System.Windows.Forms.ComboBox();
             this.btnLoadPreset = new System.Windows.Forms.Button();
             this.btnSavePreset = new System.Windows.Forms.Button();
+            this.btnRenamePreset = new System.Windows.Forms.Button();
+            this.btnDeletePreset = new System.Windows.Forms.Button();
             this.channelList = new System.Windows.Forms.CheckedListBox();
-            this.sdData1 = new System.Windows.Forms.DataGridView();
+            this.gridSdCards = new System.Windows.Forms.DataGridView();
             this.card = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timeStamp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.channels = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,27 +47,27 @@ namespace X_Live_SD_Splitter
             this.path = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.frames = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fileList = new System.Windows.Forms.ListBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.toolbarPanel = new System.Windows.Forms.Panel();
+            this.lblBufferSeconds = new System.Windows.Forms.Label();
             this.bufferSeconds = new System.Windows.Forms.NumericUpDown();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnClearAllChannels = new System.Windows.Forms.Button();
+            this.btnCheckAllChannels = new System.Windows.Forms.Button();
+            this.summaryTextBox = new System.Windows.Forms.TextBox();
+            this.btnProcess = new System.Windows.Forms.Button();
+            this.btnValidate = new System.Windows.Forms.Button();
+            this.btnAddCard = new System.Windows.Forms.Button();
             this.logBox = new System.Windows.Forms.TextBox();
             this.outputFolderOpener = new System.Windows.Forms.FolderBrowserDialog();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitFilesAndLog = new System.Windows.Forms.SplitContainer();
             this.presetPanel = new System.Windows.Forms.Panel();
             this.channelPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sdData1)).BeginInit();
-            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridSdCards)).BeginInit();
+            this.toolbarPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bufferSeconds)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitFilesAndLog)).BeginInit();
+            this.splitFilesAndLog.Panel1.SuspendLayout();
+            this.splitFilesAndLog.Panel2.SuspendLayout();
+            this.splitFilesAndLog.SuspendLayout();
             this.presetPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,9 +82,9 @@ namespace X_Live_SD_Splitter
             this.channelPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.channelPanel.Controls.Add(this.channelList);
-            this.channelPanel.Location = new System.Drawing.Point(850, 87);
+            this.channelPanel.Location = new System.Drawing.Point(850, 112);
             this.channelPanel.Name = "channelPanel";
-            this.channelPanel.Size = new System.Drawing.Size(196, 453);
+            this.channelPanel.Size = new System.Drawing.Size(196, 428);
             this.channelPanel.TabIndex = 10;
             // 
             // presetCombo
@@ -117,6 +119,26 @@ namespace X_Live_SD_Splitter
             this.btnSavePreset.UseVisualStyleBackColor = true;
             this.btnSavePreset.Click += new System.EventHandler(this.btnSavePreset_Click);
             // 
+            // btnRenamePreset
+            // 
+            this.btnRenamePreset.Location = new System.Drawing.Point(3, 56);
+            this.btnRenamePreset.Name = "btnRenamePreset";
+            this.btnRenamePreset.Size = new System.Drawing.Size(95, 23);
+            this.btnRenamePreset.TabIndex = 3;
+            this.btnRenamePreset.Text = "Rename Preset";
+            this.btnRenamePreset.UseVisualStyleBackColor = true;
+            this.btnRenamePreset.Click += new System.EventHandler(this.btnRenamePreset_Click);
+            // 
+            // btnDeletePreset
+            // 
+            this.btnDeletePreset.Location = new System.Drawing.Point(101, 56);
+            this.btnDeletePreset.Name = "btnDeletePreset";
+            this.btnDeletePreset.Size = new System.Drawing.Size(95, 23);
+            this.btnDeletePreset.TabIndex = 4;
+            this.btnDeletePreset.Text = "Delete Preset";
+            this.btnDeletePreset.UseVisualStyleBackColor = true;
+            this.btnDeletePreset.Click += new System.EventHandler(this.btnDeletePreset_Click);
+            // 
             // channelList
             // 
             this.channelList.CheckOnClick = true;
@@ -128,14 +150,14 @@ namespace X_Live_SD_Splitter
             this.channelList.TabIndex = 3;
             this.channelList.DoubleClick += new System.EventHandler(this.channelList_DoubleClick);
             // 
-            // sdData1
+            // gridSdCards
             // 
-            this.sdData1.AllowDrop = true;
-            this.sdData1.AllowUserToAddRows = false;
-            this.sdData1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gridSdCards.AllowDrop = true;
+            this.gridSdCards.AllowUserToAddRows = false;
+            this.gridSdCards.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.sdData1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.sdData1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.gridSdCards.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridSdCards.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.card,
             this.timeStamp,
             this.channels,
@@ -144,15 +166,15 @@ namespace X_Live_SD_Splitter
             this.length,
             this.path,
             this.frames});
-            this.sdData1.Location = new System.Drawing.Point(0, 87);
-            this.sdData1.Name = "sdData1";
-            this.sdData1.ReadOnly = true;
-            this.sdData1.Size = new System.Drawing.Size(844, 125);
-            this.sdData1.TabIndex = 2;
-            this.sdData1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.sdData1_RowsAdded);
-            this.sdData1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.sdData1_RowsRemoved);
-            this.sdData1.DragDrop += new System.Windows.Forms.DragEventHandler(this.sdData1_DragDrop);
-            this.sdData1.DragEnter += new System.Windows.Forms.DragEventHandler(this.sdData1_DragEnter);
+            this.gridSdCards.Location = new System.Drawing.Point(0, 87);
+            this.gridSdCards.Name = "gridSdCards";
+            this.gridSdCards.ReadOnly = true;
+            this.gridSdCards.Size = new System.Drawing.Size(844, 125);
+            this.gridSdCards.TabIndex = 2;
+            this.gridSdCards.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.gridSdCards_RowsAdded);
+            this.gridSdCards.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.gridSdCards_RowsRemoved);
+            this.gridSdCards.DragDrop += new System.Windows.Forms.DragEventHandler(this.gridSdCards_DragDrop);
+            this.gridSdCards.DragEnter += new System.Windows.Forms.DragEventHandler(this.gridSdCards_DragEnter);
             // 
             // card
             // 
@@ -214,31 +236,31 @@ namespace X_Live_SD_Splitter
             this.fileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.fileList_DragDrop);
             this.fileList.DragEnter += new System.Windows.Forms.DragEventHandler(this.fileList_DragEnter);
             // 
-            // panel1
+            // toolbarPanel
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.toolbarPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.bufferSeconds);
-            this.panel1.Controls.Add(this.textBox1);
-            this.panel1.Controls.Add(this.button3);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.button1);
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(844, 89);
-            this.panel1.TabIndex = 7;
+            this.toolbarPanel.Controls.Add(this.lblBufferSeconds);
+            this.toolbarPanel.Controls.Add(this.bufferSeconds);
+            this.toolbarPanel.Controls.Add(this.summaryTextBox);
+            this.toolbarPanel.Controls.Add(this.btnProcess);
+            this.toolbarPanel.Controls.Add(this.btnValidate);
+            this.toolbarPanel.Controls.Add(this.btnAddCard);
+            this.toolbarPanel.Location = new System.Drawing.Point(0, 0);
+            this.toolbarPanel.Name = "toolbarPanel";
+            this.toolbarPanel.Size = new System.Drawing.Size(844, 89);
+            this.toolbarPanel.TabIndex = 7;
             // 
-            // label1
+            // lblBufferSeconds
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(511, 52);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 13);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "Buffer Seconds";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.lblBufferSeconds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblBufferSeconds.AutoSize = true;
+            this.lblBufferSeconds.Location = new System.Drawing.Point(511, 52);
+            this.lblBufferSeconds.Name = "lblBufferSeconds";
+            this.lblBufferSeconds.Size = new System.Drawing.Size(80, 13);
+            this.lblBufferSeconds.TabIndex = 12;
+            this.lblBufferSeconds.Text = "Buffer Seconds";
+            this.lblBufferSeconds.Click += new System.EventHandler(this.lblBufferSeconds_Click);
             // 
             // bufferSeconds
             // 
@@ -259,69 +281,69 @@ namespace X_Live_SD_Splitter
             0});
             this.bufferSeconds.ValueChanged += new System.EventHandler(this.bufferSeconds_ValueChanged);
             // 
-            // button5
+            // btnClearAllChannels
             // 
-            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.Location = new System.Drawing.Point(120, 63);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 10;
-            this.button5.Text = "Clear All";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.btnClearAllChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearAllChannels.Location = new System.Drawing.Point(120, 85);
+            this.btnClearAllChannels.Name = "btnClearAllChannels";
+            this.btnClearAllChannels.Size = new System.Drawing.Size(75, 23);
+            this.btnClearAllChannels.TabIndex = 10;
+            this.btnClearAllChannels.Text = "Clear All";
+            this.btnClearAllChannels.UseVisualStyleBackColor = true;
+            this.btnClearAllChannels.Click += new System.EventHandler(this.btnClearAllChannels_Click);
             // 
-            // button4
+            // btnCheckAllChannels
             // 
-            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(3, 63);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 9;
-            this.button4.Text = "Check All";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.btnCheckAllChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCheckAllChannels.Location = new System.Drawing.Point(3, 85);
+            this.btnCheckAllChannels.Name = "btnCheckAllChannels";
+            this.btnCheckAllChannels.Size = new System.Drawing.Size(75, 23);
+            this.btnCheckAllChannels.TabIndex = 9;
+            this.btnCheckAllChannels.Text = "Check All";
+            this.btnCheckAllChannels.UseVisualStyleBackColor = true;
+            this.btnCheckAllChannels.Click += new System.EventHandler(this.btnCheckAllChannels_Click);
             // 
-            // textBox1
+            // summaryTextBox
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.summaryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(96, 11);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(745, 20);
-            this.textBox1.TabIndex = 8;
+            this.summaryTextBox.Location = new System.Drawing.Point(96, 11);
+            this.summaryTextBox.Name = "summaryTextBox";
+            this.summaryTextBox.Size = new System.Drawing.Size(745, 20);
+            this.summaryTextBox.TabIndex = 8;
             // 
-            // button3
+            // btnProcess
             // 
-            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(754, 47);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "Process";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProcess.Location = new System.Drawing.Point(754, 47);
+            this.btnProcess.Name = "btnProcess";
+            this.btnProcess.Size = new System.Drawing.Size(75, 23);
+            this.btnProcess.TabIndex = 7;
+            this.btnProcess.Text = "Process";
+            this.btnProcess.UseVisualStyleBackColor = true;
+            this.btnProcess.Click += new System.EventHandler(this.btnProcess_Click);
             // 
-            // button2
+            // btnValidate
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(673, 47);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "Validate";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Verify_Click);
+            this.btnValidate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnValidate.Location = new System.Drawing.Point(673, 47);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 23);
+            this.btnValidate.TabIndex = 6;
+            this.btnValidate.Text = "Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
-            // button1
+            // btnAddCard
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Add Card";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnAddCard.Location = new System.Drawing.Point(12, 12);
+            this.btnAddCard.Name = "btnAddCard";
+            this.btnAddCard.Size = new System.Drawing.Size(75, 23);
+            this.btnAddCard.TabIndex = 5;
+            this.btnAddCard.Text = "Add Card";
+            this.btnAddCard.UseVisualStyleBackColor = true;
+            this.btnAddCard.Click += new System.EventHandler(this.btnAddCard_Click);
             // 
             // logBox
             // 
@@ -337,36 +359,38 @@ namespace X_Live_SD_Splitter
             this.logBox.TabIndex = 8;
             this.logBox.WordWrap = false;
             // 
-            // splitContainer1
+            // splitFilesAndLog
             // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.splitFilesAndLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(0, 210);
-            this.splitContainer1.Name = "splitContainer1";
+            this.splitFilesAndLog.Location = new System.Drawing.Point(0, 210);
+            this.splitFilesAndLog.Name = "splitFilesAndLog";
             // 
-            // splitContainer1.Panel1
+            // splitFilesAndLog.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.fileList);
+            this.splitFilesAndLog.Panel1.Controls.Add(this.fileList);
             // 
-            // splitContainer1.Panel2
+            // splitFilesAndLog.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.logBox);
-            this.splitContainer1.Size = new System.Drawing.Size(844, 330);
-            this.splitContainer1.SplitterDistance = 347;
-            this.splitContainer1.TabIndex = 9;
+            this.splitFilesAndLog.Panel2.Controls.Add(this.logBox);
+            this.splitFilesAndLog.Size = new System.Drawing.Size(844, 330);
+            this.splitFilesAndLog.SplitterDistance = 347;
+            this.splitFilesAndLog.TabIndex = 9;
             // 
             // presetPanel
             // 
             this.presetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.presetPanel.Controls.Add(this.button4);
-            this.presetPanel.Controls.Add(this.button5);
+            this.presetPanel.Controls.Add(this.btnCheckAllChannels);
+            this.presetPanel.Controls.Add(this.btnClearAllChannels);
+            this.presetPanel.Controls.Add(this.btnRenamePreset);
+            this.presetPanel.Controls.Add(this.btnDeletePreset);
             this.presetPanel.Controls.Add(this.btnSavePreset);
             this.presetPanel.Controls.Add(this.presetCombo);
             this.presetPanel.Controls.Add(this.btnLoadPreset);
             this.presetPanel.Location = new System.Drawing.Point(847, 0);
             this.presetPanel.Name = "presetPanel";
-            this.presetPanel.Size = new System.Drawing.Size(199, 89);
+            this.presetPanel.Size = new System.Drawing.Size(199, 112);
             this.presetPanel.TabIndex = 11;
             // 
             // Form1
@@ -376,22 +400,22 @@ namespace X_Live_SD_Splitter
             this.ClientSize = new System.Drawing.Size(1046, 540);
             this.Controls.Add(this.presetPanel);
             this.Controls.Add(this.channelPanel);
-            this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.sdData1);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.splitFilesAndLog);
+            this.Controls.Add(this.gridSdCards);
+            this.Controls.Add(this.toolbarPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "XLive SD Splitter";
             this.channelPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.sdData1)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridSdCards)).EndInit();
+            this.toolbarPanel.ResumeLayout(false);
+            this.toolbarPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bufferSeconds)).EndInit();
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
+            this.splitFilesAndLog.Panel1.ResumeLayout(false);
+            this.splitFilesAndLog.Panel2.ResumeLayout(false);
+            this.splitFilesAndLog.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitFilesAndLog)).EndInit();
+            this.splitFilesAndLog.ResumeLayout(false);
             this.presetPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -404,8 +428,10 @@ namespace X_Live_SD_Splitter
         private System.Windows.Forms.ComboBox presetCombo;
         private System.Windows.Forms.Button btnLoadPreset;
         private System.Windows.Forms.Button btnSavePreset;
+        private System.Windows.Forms.Button btnRenamePreset;
+        private System.Windows.Forms.Button btnDeletePreset;
         private System.Windows.Forms.CheckedListBox channelList;
-        private System.Windows.Forms.DataGridView sdData1;
+        private System.Windows.Forms.DataGridView gridSdCards;
         private System.Windows.Forms.DataGridViewTextBoxColumn card;
         private System.Windows.Forms.DataGridViewTextBoxColumn timeStamp;
         private System.Windows.Forms.DataGridViewTextBoxColumn channels;
@@ -415,17 +441,17 @@ namespace X_Live_SD_Splitter
         private System.Windows.Forms.DataGridViewTextBoxColumn path;
         private System.Windows.Forms.DataGridViewTextBoxColumn frames;
         private System.Windows.Forms.ListBox fileList;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Panel toolbarPanel;
+        private System.Windows.Forms.TextBox summaryTextBox;
+        private System.Windows.Forms.Button btnProcess;
+        private System.Windows.Forms.Button btnValidate;
+        private System.Windows.Forms.Button btnAddCard;
         private System.Windows.Forms.TextBox logBox;
         private System.Windows.Forms.FolderBrowserDialog outputFolderOpener;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnClearAllChannels;
+        private System.Windows.Forms.Button btnCheckAllChannels;
+        private System.Windows.Forms.SplitContainer splitFilesAndLog;
+        private System.Windows.Forms.Label lblBufferSeconds;
         private System.Windows.Forms.NumericUpDown bufferSeconds;
         private System.Windows.Forms.Panel presetPanel;
     }
