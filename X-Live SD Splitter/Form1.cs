@@ -14,7 +14,98 @@ namespace X_Live_SD_Splitter
         {
             InitializeComponent();
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            Text = string.Format("XLive SD Splitter  v{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+            Text = string.Format("XLive SD Splitter  v{0}.{1}.{2}-{3}", version.Major, version.Minor, version.Build, version.Revision);
+            RefreshPresetList();
+        }
+
+        private static string GetPresetDirectory()
+        {
+            string dir = Path.Combine(Application.UserAppDataPath, "XLive SD Splitter", "ChannelPresets");
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            return dir;
+        }
+
+        private void RefreshPresetList()
+        {
+            presetCombo.Items.Clear();
+            string dir = GetPresetDirectory();
+            if (!Directory.Exists(dir)) return;
+            foreach (string path in Directory.GetFiles(dir, "*.txt"))
+            {
+                string name = Path.GetFileNameWithoutExtension(path);
+                if (!string.IsNullOrEmpty(name))
+                    presetCombo.Items.Add(name);
+            }
+            if (presetCombo.Items.Count > 0)
+                presetCombo.SelectedIndex = 0;
+        }
+
+        private void btnSavePreset_Click(object sender, EventArgs e)
+        {
+            if (channelList.Items.Count == 0)
+            {
+                MessageBox.Show("No channels in the list. Run Validate first.", "Save Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string name = Microsoft.VisualBasic.Interaction.InputBox("Enter a name for this channel preset:", "Save Preset", "My Preset", -1, -1);
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+            string safeName = string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
+            if (string.IsNullOrEmpty(safeName)) safeName = "Preset";
+            string dir = GetPresetDirectory();
+            string filePath = Path.Combine(dir, safeName.Trim() + ".txt");
+            var checkedIndices = new List<int>();
+            for (int i = 0; i < channelList.Items.Count; i++)
+            {
+                if (channelList.GetItemChecked(i))
+                    checkedIndices.Add(i);
+            }
+            var lines = new string[checkedIndices.Count];
+            for (int i = 0; i < checkedIndices.Count; i++)
+                lines[i] = checkedIndices[i].ToString();
+            File.WriteAllLines(filePath, lines);
+            RefreshPresetList();
+            for (int i = 0; i < presetCombo.Items.Count; i++)
+            {
+                if (string.Equals(presetCombo.Items[i].ToString(), safeName.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    presetCombo.SelectedIndex = i;
+                    break;
+                }
+            }
+            MessageBox.Show("Preset saved.", "Save Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnLoadPreset_Click(object sender, EventArgs e)
+        {
+            if (channelList.Items.Count == 0)
+            {
+                MessageBox.Show("No channels in the list. Run Validate first.", "Load Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (presetCombo.SelectedItem == null)
+            {
+                MessageBox.Show("Select a preset from the list, or save one first.", "Load Preset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string name = presetCombo.SelectedItem.ToString();
+            string safeName = string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
+            string filePath = Path.Combine(GetPresetDirectory(), safeName.Trim() + ".txt");
+            if (!File.Exists(filePath))
+            {
+                MessageBox.Show("Preset file not found.", "Load Preset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            string[] lines = File.ReadAllLines(filePath);
+            for (int i = 0; i < channelList.Items.Count; i++)
+                channelList.SetItemChecked(i, false);
+            foreach (string line in lines)
+            {
+                int idx;
+                if (int.TryParse(line.Trim(), out idx) && idx >= 0 && idx < channelList.Items.Count)
+                    channelList.SetItemChecked(idx, true);
+            }
         }
 
         public class Bwu
@@ -181,7 +272,7 @@ namespace X_Live_SD_Splitter
             for (int x = 1; x <= (int)sdData1.Rows[0].Cells[2].Value; x++)
             {
 
-                channelList.Items.Add("Channel " + x, true);
+                channelList.Items.Add("Channel " + x.ToString("D2"), true);
             }
 
             foreach (DataGridViewRow dr in sdData1.Rows)
@@ -529,7 +620,8 @@ namespace X_Live_SD_Splitter
             {
                 if (se.SelectedIndex < 0)
                     return;
-                string s = Microsoft.VisualBasic.Interaction.InputBox("Enter new name for channel " + (se.SelectedIndex + 1), "Name Channel " + (se.SelectedIndex+1), se.Text, -1, -1);
+                int chNum = se.SelectedIndex + 1;
+                string s = Microsoft.VisualBasic.Interaction.InputBox("Enter new name for channel " + chNum.ToString("D2"), "Name Channel " + chNum.ToString("D2"), se.Text, -1, -1);
                 if (s.Length > 0)
                 {
                     channelList.Items[se.SelectedIndex] = s;

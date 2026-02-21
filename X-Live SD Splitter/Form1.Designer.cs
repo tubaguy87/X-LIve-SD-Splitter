@@ -30,6 +30,10 @@ namespace X_Live_SD_Splitter
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.sdCardOpener = new System.Windows.Forms.OpenFileDialog();
+            this.channelPanel = new System.Windows.Forms.Panel();
+            this.presetCombo = new System.Windows.Forms.ComboBox();
+            this.btnLoadPreset = new System.Windows.Forms.Button();
+            this.btnSavePreset = new System.Windows.Forms.Button();
             this.channelList = new System.Windows.Forms.CheckedListBox();
             this.sdData1 = new System.Windows.Forms.DataGridView();
             this.card = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -53,6 +57,8 @@ namespace X_Live_SD_Splitter
             this.logBox = new System.Windows.Forms.TextBox();
             this.outputFolderOpener = new System.Windows.Forms.FolderBrowserDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.presetPanel = new System.Windows.Forms.Panel();
+            this.channelPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sdData1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bufferSeconds)).BeginInit();
@@ -60,6 +66,7 @@ namespace X_Live_SD_Splitter
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.presetPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // sdCardOpener
@@ -68,15 +75,57 @@ namespace X_Live_SD_Splitter
             this.sdCardOpener.FileName = "SE_LOG.BIN";
             this.sdCardOpener.Filter = "XLive Session files (*.bin)|*.bin|All files (*.*)|*.*";
             // 
+            // channelPanel
+            // 
+            this.channelPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.channelPanel.Controls.Add(this.channelList);
+            this.channelPanel.Location = new System.Drawing.Point(850, 87);
+            this.channelPanel.Name = "channelPanel";
+            this.channelPanel.Size = new System.Drawing.Size(196, 453);
+            this.channelPanel.TabIndex = 10;
+            // 
+            // presetCombo
+            // 
+            this.presetCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.presetCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.presetCombo.FormattingEnabled = true;
+            this.presetCombo.Location = new System.Drawing.Point(3, 32);
+            this.presetCombo.Name = "presetCombo";
+            this.presetCombo.Size = new System.Drawing.Size(192, 21);
+            this.presetCombo.TabIndex = 0;
+            // 
+            // btnLoadPreset
+            // 
+            this.btnLoadPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLoadPreset.Location = new System.Drawing.Point(3, 3);
+            this.btnLoadPreset.Name = "btnLoadPreset";
+            this.btnLoadPreset.Size = new System.Drawing.Size(95, 23);
+            this.btnLoadPreset.TabIndex = 1;
+            this.btnLoadPreset.Text = "Load Preset";
+            this.btnLoadPreset.UseVisualStyleBackColor = true;
+            this.btnLoadPreset.Click += new System.EventHandler(this.btnLoadPreset_Click);
+            // 
+            // btnSavePreset
+            // 
+            this.btnSavePreset.Location = new System.Drawing.Point(101, 3);
+            this.btnSavePreset.Name = "btnSavePreset";
+            this.btnSavePreset.Size = new System.Drawing.Size(95, 23);
+            this.btnSavePreset.TabIndex = 2;
+            this.btnSavePreset.Text = "Save Preset";
+            this.btnSavePreset.UseVisualStyleBackColor = true;
+            this.btnSavePreset.Click += new System.EventHandler(this.btnSavePreset_Click);
+            // 
             // channelList
             // 
             this.channelList.CheckOnClick = true;
-            this.channelList.Dock = System.Windows.Forms.DockStyle.Right;
+            this.channelList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.channelList.FormattingEnabled = true;
-            this.channelList.Location = new System.Drawing.Point(844, 0);
+            this.channelList.Location = new System.Drawing.Point(0, 0);
             this.channelList.Name = "channelList";
-            this.channelList.Size = new System.Drawing.Size(202, 540);
-            this.channelList.TabIndex = 1;
+            this.channelList.Size = new System.Drawing.Size(196, 453);
+            this.channelList.TabIndex = 3;
             this.channelList.DoubleClick += new System.EventHandler(this.channelList_DoubleClick);
             // 
             // sdData1
@@ -100,10 +149,10 @@ namespace X_Live_SD_Splitter
             this.sdData1.ReadOnly = true;
             this.sdData1.Size = new System.Drawing.Size(844, 125);
             this.sdData1.TabIndex = 2;
-            this.sdData1.DragDrop += new System.Windows.Forms.DragEventHandler(this.sdData1_DragDrop);
-            this.sdData1.DragEnter += new System.Windows.Forms.DragEventHandler(this.sdData1_DragEnter);
             this.sdData1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.sdData1_RowsAdded);
             this.sdData1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.sdData1_RowsRemoved);
+            this.sdData1.DragDrop += new System.Windows.Forms.DragEventHandler(this.sdData1_DragDrop);
+            this.sdData1.DragEnter += new System.Windows.Forms.DragEventHandler(this.sdData1_DragEnter);
             // 
             // card
             // 
@@ -171,8 +220,6 @@ namespace X_Live_SD_Splitter
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.bufferSeconds);
-            this.panel1.Controls.Add(this.button5);
-            this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.button2);
@@ -184,8 +231,9 @@ namespace X_Live_SD_Splitter
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(93, 47);
+            this.label1.Location = new System.Drawing.Point(511, 52);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 13);
             this.label1.TabIndex = 12;
@@ -194,7 +242,8 @@ namespace X_Live_SD_Splitter
             // 
             // bufferSeconds
             // 
-            this.bufferSeconds.Location = new System.Drawing.Point(179, 44);
+            this.bufferSeconds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bufferSeconds.Location = new System.Drawing.Point(597, 49);
             this.bufferSeconds.Minimum = new decimal(new int[] {
             1,
             0,
@@ -213,7 +262,7 @@ namespace X_Live_SD_Splitter
             // button5
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.Location = new System.Drawing.Point(757, 44);
+            this.button5.Location = new System.Drawing.Point(120, 63);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 10;
@@ -224,7 +273,7 @@ namespace X_Live_SD_Splitter
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(757, 11);
+            this.button4.Location = new System.Drawing.Point(3, 63);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 9;
@@ -237,14 +286,15 @@ namespace X_Live_SD_Splitter
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(179, 11);
+            this.textBox1.Location = new System.Drawing.Point(96, 11);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(563, 20);
+            this.textBox1.Size = new System.Drawing.Size(745, 20);
             this.textBox1.TabIndex = 8;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(93, 12);
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.Location = new System.Drawing.Point(754, 47);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 7;
@@ -254,7 +304,8 @@ namespace X_Live_SD_Splitter
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 41);
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button2.Location = new System.Drawing.Point(673, 47);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 6;
@@ -305,18 +356,33 @@ namespace X_Live_SD_Splitter
             this.splitContainer1.SplitterDistance = 347;
             this.splitContainer1.TabIndex = 9;
             // 
+            // presetPanel
+            // 
+            this.presetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.presetPanel.Controls.Add(this.button4);
+            this.presetPanel.Controls.Add(this.button5);
+            this.presetPanel.Controls.Add(this.btnSavePreset);
+            this.presetPanel.Controls.Add(this.presetCombo);
+            this.presetPanel.Controls.Add(this.btnLoadPreset);
+            this.presetPanel.Location = new System.Drawing.Point(847, 0);
+            this.presetPanel.Name = "presetPanel";
+            this.presetPanel.Size = new System.Drawing.Size(199, 89);
+            this.presetPanel.TabIndex = 11;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1046, 540);
-            this.Controls.Add(this.channelList);
+            this.Controls.Add(this.presetPanel);
+            this.Controls.Add(this.channelPanel);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.sdData1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "XLive SD Splitter";
+            this.channelPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.sdData1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -326,6 +392,7 @@ namespace X_Live_SD_Splitter
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.presetPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -333,6 +400,10 @@ namespace X_Live_SD_Splitter
         #endregion
 
         private System.Windows.Forms.OpenFileDialog sdCardOpener;
+        private System.Windows.Forms.Panel channelPanel;
+        private System.Windows.Forms.ComboBox presetCombo;
+        private System.Windows.Forms.Button btnLoadPreset;
+        private System.Windows.Forms.Button btnSavePreset;
         private System.Windows.Forms.CheckedListBox channelList;
         private System.Windows.Forms.DataGridView sdData1;
         private System.Windows.Forms.DataGridViewTextBoxColumn card;
@@ -356,6 +427,7 @@ namespace X_Live_SD_Splitter
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown bufferSeconds;
+        private System.Windows.Forms.Panel presetPanel;
     }
 }
 
