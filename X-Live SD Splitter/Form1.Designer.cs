@@ -31,12 +31,12 @@ namespace X_Live_SD_Splitter
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.sdCardOpener = new System.Windows.Forms.OpenFileDialog();
             this.channelPanel = new System.Windows.Forms.Panel();
+            this.channelList = new System.Windows.Forms.CheckedListBox();
             this.presetCombo = new System.Windows.Forms.ComboBox();
             this.btnLoadPreset = new System.Windows.Forms.Button();
             this.btnSavePreset = new System.Windows.Forms.Button();
             this.btnRenamePreset = new System.Windows.Forms.Button();
             this.btnDeletePreset = new System.Windows.Forms.Button();
-            this.channelList = new System.Windows.Forms.CheckedListBox();
             this.gridSdCards = new System.Windows.Forms.DataGridView();
             this.card = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timeStamp = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -50,12 +50,12 @@ namespace X_Live_SD_Splitter
             this.toolbarPanel = new System.Windows.Forms.Panel();
             this.lblBufferSeconds = new System.Windows.Forms.Label();
             this.bufferSeconds = new System.Windows.Forms.NumericUpDown();
-            this.btnClearAllChannels = new System.Windows.Forms.Button();
-            this.btnCheckAllChannels = new System.Windows.Forms.Button();
             this.summaryTextBox = new System.Windows.Forms.TextBox();
             this.btnProcess = new System.Windows.Forms.Button();
             this.btnValidate = new System.Windows.Forms.Button();
             this.btnAddCard = new System.Windows.Forms.Button();
+            this.btnClearAllChannels = new System.Windows.Forms.Button();
+            this.btnCheckAllChannels = new System.Windows.Forms.Button();
             this.logBox = new System.Windows.Forms.TextBox();
             this.outputFolderOpener = new System.Windows.Forms.FolderBrowserDialog();
             this.splitFilesAndLog = new System.Windows.Forms.SplitContainer();
@@ -86,6 +86,17 @@ namespace X_Live_SD_Splitter
             this.channelPanel.Name = "channelPanel";
             this.channelPanel.Size = new System.Drawing.Size(196, 428);
             this.channelPanel.TabIndex = 10;
+            // 
+            // channelList
+            // 
+            this.channelList.CheckOnClick = true;
+            this.channelList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.channelList.FormattingEnabled = true;
+            this.channelList.Location = new System.Drawing.Point(0, 0);
+            this.channelList.Name = "channelList";
+            this.channelList.Size = new System.Drawing.Size(196, 428);
+            this.channelList.TabIndex = 3;
+            this.channelList.DoubleClick += new System.EventHandler(this.channelList_DoubleClick);
             // 
             // presetCombo
             // 
@@ -138,17 +149,6 @@ namespace X_Live_SD_Splitter
             this.btnDeletePreset.Text = "Delete Preset";
             this.btnDeletePreset.UseVisualStyleBackColor = true;
             this.btnDeletePreset.Click += new System.EventHandler(this.btnDeletePreset_Click);
-            // 
-            // channelList
-            // 
-            this.channelList.CheckOnClick = true;
-            this.channelList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.channelList.FormattingEnabled = true;
-            this.channelList.Location = new System.Drawing.Point(0, 0);
-            this.channelList.Name = "channelList";
-            this.channelList.Size = new System.Drawing.Size(196, 453);
-            this.channelList.TabIndex = 3;
-            this.channelList.DoubleClick += new System.EventHandler(this.channelList_DoubleClick);
             // 
             // gridSdCards
             // 
@@ -281,28 +281,6 @@ namespace X_Live_SD_Splitter
             0});
             this.bufferSeconds.ValueChanged += new System.EventHandler(this.bufferSeconds_ValueChanged);
             // 
-            // btnClearAllChannels
-            // 
-            this.btnClearAllChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearAllChannels.Location = new System.Drawing.Point(120, 85);
-            this.btnClearAllChannels.Name = "btnClearAllChannels";
-            this.btnClearAllChannels.Size = new System.Drawing.Size(75, 23);
-            this.btnClearAllChannels.TabIndex = 10;
-            this.btnClearAllChannels.Text = "Clear All";
-            this.btnClearAllChannels.UseVisualStyleBackColor = true;
-            this.btnClearAllChannels.Click += new System.EventHandler(this.btnClearAllChannels_Click);
-            // 
-            // btnCheckAllChannels
-            // 
-            this.btnCheckAllChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCheckAllChannels.Location = new System.Drawing.Point(3, 85);
-            this.btnCheckAllChannels.Name = "btnCheckAllChannels";
-            this.btnCheckAllChannels.Size = new System.Drawing.Size(75, 23);
-            this.btnCheckAllChannels.TabIndex = 9;
-            this.btnCheckAllChannels.Text = "Check All";
-            this.btnCheckAllChannels.UseVisualStyleBackColor = true;
-            this.btnCheckAllChannels.Click += new System.EventHandler(this.btnCheckAllChannels_Click);
-            // 
             // summaryTextBox
             // 
             this.summaryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -344,6 +322,28 @@ namespace X_Live_SD_Splitter
             this.btnAddCard.Text = "Add Card";
             this.btnAddCard.UseVisualStyleBackColor = true;
             this.btnAddCard.Click += new System.EventHandler(this.btnAddCard_Click);
+            // 
+            // btnClearAllChannels
+            // 
+            this.btnClearAllChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearAllChannels.Location = new System.Drawing.Point(120, 85);
+            this.btnClearAllChannels.Name = "btnClearAllChannels";
+            this.btnClearAllChannels.Size = new System.Drawing.Size(75, 23);
+            this.btnClearAllChannels.TabIndex = 10;
+            this.btnClearAllChannels.Text = "Clear All";
+            this.btnClearAllChannels.UseVisualStyleBackColor = true;
+            this.btnClearAllChannels.Click += new System.EventHandler(this.btnClearAllChannels_Click);
+            // 
+            // btnCheckAllChannels
+            // 
+            this.btnCheckAllChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCheckAllChannels.Location = new System.Drawing.Point(3, 85);
+            this.btnCheckAllChannels.Name = "btnCheckAllChannels";
+            this.btnCheckAllChannels.Size = new System.Drawing.Size(75, 23);
+            this.btnCheckAllChannels.TabIndex = 9;
+            this.btnCheckAllChannels.Text = "Check All";
+            this.btnCheckAllChannels.UseVisualStyleBackColor = true;
+            this.btnCheckAllChannels.Click += new System.EventHandler(this.btnCheckAllChannels_Click);
             // 
             // logBox
             // 
