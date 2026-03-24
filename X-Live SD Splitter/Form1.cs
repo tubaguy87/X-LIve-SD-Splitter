@@ -55,16 +55,13 @@ namespace X_Live_SD_Splitter
             if (string.IsNullOrEmpty(safeName)) safeName = "Preset";
             string dir = GetPresetDirectory();
             string filePath = Path.Combine(dir, safeName.Trim() + ".txt");
-            var checkedIndices = new List<int>();
+            var lines = new List<string>();
             for (int i = 0; i < channelList.Items.Count; i++)
             {
                 if (channelList.GetItemChecked(i))
-                    checkedIndices.Add(i);
+                    lines.Add(channelList.Items[i].ToString());
             }
-            var lines = new string[checkedIndices.Count];
-            for (int i = 0; i < checkedIndices.Count; i++)
-                lines[i] = checkedIndices[i].ToString();
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines.ToArray());
             RefreshPresetList();
             for (int i = 0; i < presetCombo.Items.Count; i++)
             {
@@ -102,9 +99,25 @@ namespace X_Live_SD_Splitter
                 channelList.SetItemChecked(i, false);
             foreach (string line in lines)
             {
-                int idx;
-                if (int.TryParse(line.Trim(), out idx) && idx >= 0 && idx < channelList.Items.Count)
-                    channelList.SetItemChecked(idx, true);
+                string trimmed = line.Trim();
+                if (trimmed.Length == 0)
+                    continue;
+                bool matched = false;
+                for (int i = 0; i < channelList.Items.Count; i++)
+                {
+                    if (string.Equals(channelList.Items[i].ToString(), trimmed, StringComparison.Ordinal))
+                    {
+                        channelList.SetItemChecked(i, true);
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched)
+                {
+                    int idx;
+                    if (int.TryParse(trimmed, out idx) && idx >= 0 && idx < channelList.Items.Count)
+                        channelList.SetItemChecked(idx, true);
+                }
             }
         }
 
